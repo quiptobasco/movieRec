@@ -13,4 +13,6 @@ router
     .get(movieController.getMovieById)
     .put(movieController.updateMovie);
 
+router.route('/search').post(movieController.searchOMDB);
+
 module.exports = router;

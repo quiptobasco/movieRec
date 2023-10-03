@@ -1,5 +1,29 @@
 const Movie = require('../models/movies');
 const asyncHandler = require('express-async-handler');
+const axios = require('axios');
+
+// desc Search OMDB
+// route POST /api/movies/search
+// access Public
+const searchOMDB = asyncHandler(async (req, res) => {
+    const { search } = req.body;
+
+    try {
+        const response = await axios.get(
+            `http://www.omdbapi.com/?apikey=${process.env.OMDB_API_KEY}&s=${search}&type=movie`
+        );
+
+        // Check if the response contains data
+        if (response.data) {
+            res.status(200).json(response.data);
+        } else {
+            res.status(404).json({ message: 'No results found.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
 
 // desc Get all movies
 // route GET /api/movies
@@ -105,4 +129,5 @@ module.exports = {
     addMovie,
     updateMovie,
     getIsWatching,
+    searchOMDB,
 };
